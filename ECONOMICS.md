@@ -1,0 +1,11 @@
+# Economics
+
+This tool is a B2B lead-generation product, so the value depends on whether high-savings audits turn into credit purchases. I estimate a converted Credex lead is worth $1,500-$5,000 in gross profit. Example: a startup buying $30,000/year of discounted AI credits with a 10-20% gross margin creates $3,000-$6,000 gross profit before support. A smaller startup might buy only $10,000/year, which still leaves $1,000-$2,000 gross profit if Credex has efficient fulfillment.
+
+The CAC by channel can stay low early. Founder community posts cost time, not cash, so the cash CAC is near $0 but the labor CAC might be 30 minutes per useful post or reply. Manual audit teardown DMs might cost 15 minutes each and convert better because the value is personalized. A Show HN or Product Hunt launch could generate hundreds of visits for one day of prep, but conversion quality will vary. SEO is not a week-1 channel; it becomes useful after pricing pages and comparison pages rank.
+
+A plausible funnel: 1,000 visitors produce 250 completed audits. If 30% capture email, that is 75 leads. If 20% of captured leads have more than $500/month savings, that is 15 high-intent leads. If 40% book a Credex consultation and 25% of those buy credits, that creates 1.5 customers. At $3,000 gross profit per converted customer, 1,000 visitors can be worth about $4,500 gross profit. That is profitable if traffic comes from owned channels, founder communities, partner posts, or Credex sales follow-up.
+
+To drive $1M ARR in 18 months, the tool would need to become a repeatable wedge into AI procurement. If the average customer buys $25,000/year of credits and Credex recognizes roughly $5,000/year net revenue or gross profit contribution, then $1M requires about 200 active customers. At a 0.15% visitor-to-customer conversion rate, that means roughly 133,000 qualified visitors over 18 months. More realistically, the tool should combine self-serve traffic with outbound: audit data identifies high-spend categories, sales follows up with specific savings, and public reports create referral loops.
+
+The main risk is that many audits show small savings, which is still useful to users but weak for Credex revenue. The product should therefore optimize for honest completion first, then route only material opportunities to sales.
