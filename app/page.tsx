@@ -25,18 +25,31 @@ type ApiResult = {
 };
 
 export default function HomePage() {
-  const [input, setInput] = useState<AuditInput>(() => {
-    if (typeof window === "undefined") return makeDefaultInput();
-    const saved = window.localStorage.getItem("spendlens-input");
-    return saved ? JSON.parse(saved) : makeDefaultInput();
-  });
+  const [input, setInput] = useState<AuditInput>(() => makeDefaultInput());
+  const [hydrated, setHydrated] = useState(false);
   const [audit, setAudit] = useState<ApiResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [leadStatus, setLeadStatus] = useState("");
 
   useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const saved = window.localStorage.getItem("spendlens-input");
+      if (saved) {
+        try {
+          setInput(JSON.parse(saved) as AuditInput);
+        } catch {
+          window.localStorage.removeItem("spendlens-input");
+        }
+      }
+      setHydrated(true);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
     window.localStorage.setItem("spendlens-input", JSON.stringify(input));
-  }, [input]);
+  }, [hydrated, input]);
 
   const shareUrl = useMemo(() => {
     if (!audit) return "";
@@ -205,7 +218,7 @@ export default function HomePage() {
           <div className="result-hero">
             <div className="result-panel">
               <span className="eyebrow">{audit.result.highSavings ? "Credex opportunity detected" : "Audit complete"}</span>
-              <h2>{audit.result.monthlySavings < 100 ? "You’re spending well." : "Your AI stack can be leaner."}</h2>
+              <h2>{audit.result.monthlySavings < 100 ? "You're spending well." : "Your AI stack can be leaner."}</h2>
               <p>{audit.result.summary}</p>
               <div className="savings">
                 <div>
@@ -261,7 +274,7 @@ export default function HomePage() {
                 <div className="breakdown-item" key={item.id}>
                   <div>
                     <h3>
-                      {item.toolName}: ${item.currentSpend} → ${item.recommendedSpend}
+                      {item.toolName}: ${item.currentSpend} to ${item.recommendedSpend}
                     </h3>
                     <p>
                       <strong>{item.action}.</strong> {item.reason}
