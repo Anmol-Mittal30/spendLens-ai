@@ -101,7 +101,7 @@ SUPABASE_SERVICE_ROLE_KEY=
 RESEND_API_KEY=
 RESEND_FROM_EMAIL=SpendLens AI <onboarding@resend.dev>
 
-LEAD_TO_EMAIL=founders@credex.rocks
+LEAD_TO_EMAIL=mittalanmol0309@gmail.com
 ```
 
 Anthropic integration is optional and the app falls back to deterministic summaries if API credentials are unavailable.
