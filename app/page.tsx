@@ -1,9 +1,12 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { ArrowRight, Copy, Plus, Trash2 } from "lucide-react";
+import { ArrowRight, Copy, Plus, Trash2, Download } from "lucide-react";
 import { plansFor, TOOL_OPTIONS } from "@/lib/pricing";
 import type { AuditInput, AuditResult, ToolInput, ToolKey, UseCase } from "@/lib/types";
+import { AuditPDF } from "@/lib/pdf-report";
+import { pdf } from "@react-pdf/renderer";
+import { saveAs } from "file-saver";
 
 const starterTool = (): ToolInput => ({
   id: typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : String(Date.now()),
@@ -55,6 +58,18 @@ export default function HomePage() {
     if (!audit) return "";
     return `${window.location.origin}/audit/${audit.shareId}`;
   }, [audit]);
+
+  async function handleDownloadPDF() {
+    if (!audit) return;
+    try {
+      // pdf() creates a PDF instance in the browser (uses @react-pdf/renderer's browser build)
+      // .toBlob() renders the PDF to a Blob client-side — no Node.js/server needed
+      const blob = await pdf(<AuditPDF audit={audit.result} />).toBlob();
+      saveAs(blob, `spendlens-audit-${audit.shareId.slice(0, 8)}.pdf`);
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+    }
+  }
 
   function updateTool(id: string, patch: Partial<ToolInput>) {
     setInput((current) => ({
@@ -234,6 +249,9 @@ export default function HomePage() {
                 <input readOnly value={shareUrl} aria-label="Share URL" />
                 <button className="secondary" type="button" title="Copy share URL" onClick={() => navigator.clipboard.writeText(shareUrl)}>
                   <Copy size={18} />
+                </button>
+                <button className="secondary" type="button" title="Download PDF" onClick={handleDownloadPDF}>
+                  <Download size={18} />
                 </button>
               </div>
             </div>
