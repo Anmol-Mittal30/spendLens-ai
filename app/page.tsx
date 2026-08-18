@@ -39,11 +39,19 @@ export default function HomePage() {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       const savedInput = window.localStorage.getItem("spendlens-input");
+      const savedAudit = window.sessionStorage.getItem("spendlens-audit");
       if (savedInput) {
         try {
           setInput(JSON.parse(savedInput) as AuditInput);
         } catch {
           window.localStorage.removeItem("spendlens-input");
+        }
+      }
+      if (savedAudit) {
+        try {
+          setAudit(JSON.parse(savedAudit) as ApiResult);
+        } catch {
+          window.sessionStorage.removeItem("spendlens-audit");
         }
       }
       setHydrated(true);
@@ -55,6 +63,15 @@ export default function HomePage() {
     if (!hydrated) return;
     window.localStorage.setItem("spendlens-input", JSON.stringify(input));
   }, [hydrated, input]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    if (audit) {
+      window.sessionStorage.setItem("spendlens-audit", JSON.stringify(audit));
+    } else {
+      window.sessionStorage.removeItem("spendlens-audit");
+    }
+  }, [hydrated, audit]);
 
   const shareUrl = useMemo(() => {
     if (!audit) return "";
