@@ -101,20 +101,39 @@ export default function HomePage() {
     event.preventDefault();
     if (!audit) return;
     const form = new FormData(event.currentTarget);
-    const response = await fetch("/api/leads", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: form.get("email"),
-        company: form.get("company"),
-        role: form.get("role"),
-        teamSize: input.teamSize,
-        website: form.get("website"),
-        shareId: audit.shareId,
-        result: audit.result
-      })
-    });
-    setLeadStatus(response.ok ? "Report captured. Check your inbox if email is configured." : "Could not capture the report yet.");
+    const email = form.get("email") as string;
+
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          company: form.get("company"),
+          role: form.get("role"),
+          teamSize: input.teamSize,
+          website: form.get("website"),
+          shareId: audit.shareId,
+          result: audit.result
+        })
+      });
+
+      if (!response.ok) {
+        setLeadStatus("Could not capture the report. Please try again.");
+        return;
+      }
+
+      const data = await response.json();
+
+      if (data.emailSent) {
+        setLeadStatus(`Report sent successfully to ${email}.`);
+      } else {
+        setLeadStatus("Report saved, but we couldn't send the email. Please try again.");
+      }
+    } catch (error) {
+      console.error("Failed to capture lead:", error);
+      setLeadStatus("Something went wrong. Please try again.");
+    }
   }
 
   return (
