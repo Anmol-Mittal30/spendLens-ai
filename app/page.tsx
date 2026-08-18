@@ -39,19 +39,11 @@ export default function HomePage() {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       const savedInput = window.localStorage.getItem("spendlens-input");
-      const savedAudit = window.localStorage.getItem("spendlens-audit");
       if (savedInput) {
         try {
           setInput(JSON.parse(savedInput) as AuditInput);
         } catch {
           window.localStorage.removeItem("spendlens-input");
-        }
-      }
-      if (savedAudit) {
-        try {
-          setAudit(JSON.parse(savedAudit) as ApiResult);
-        } catch {
-          window.localStorage.removeItem("spendlens-audit");
         }
       }
       setHydrated(true);
@@ -63,15 +55,6 @@ export default function HomePage() {
     if (!hydrated) return;
     window.localStorage.setItem("spendlens-input", JSON.stringify(input));
   }, [hydrated, input]);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    if (audit) {
-      window.localStorage.setItem("spendlens-audit", JSON.stringify(audit));
-    } else {
-      window.localStorage.removeItem("spendlens-audit");
-    }
-  }, [hydrated, audit]);
 
   const shareUrl = useMemo(() => {
     if (!audit) return "";
@@ -298,6 +281,9 @@ export default function HomePage() {
                 </button>
                 <button className="secondary" type="button" title="Download PDF" onClick={handleDownloadPDF}>
                   <Download size={18} />
+                </button>
+                <button className="secondary" type="button" title="Clear audit" onClick={() => setAudit(null)}>
+                  <Trash2 size={18} />
                 </button>
               </div>
             </div>
