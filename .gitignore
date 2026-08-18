@@ -7,3 +7,7 @@ coverage
 .env.local
 .env.*.local
 *.log
+.vercel
+.env*
+.claude
+.claude

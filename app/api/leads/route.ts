@@ -32,7 +32,22 @@ export async function POST(request: Request) {
   const payload = leadSchema.parse(await request.json());
   if (payload.website) return NextResponse.json({ ok: true });
 
-  await storeLead(payload);
-  await sendLeadEmail(payload);
-  return NextResponse.json({ ok: true });
+  // Store lead in Supabase
+  let stored = false;
+  try {
+    await storeLead(payload);
+    stored = true;
+  } catch (error) {
+    console.error("Failed to store lead:", error);
+  }
+
+  // Send email with PDF attachment
+  const emailResult = await sendLeadEmail(payload);
+
+  return NextResponse.json({
+    ok: true,
+    emailSent: emailResult.sent,
+    email: payload.email,
+    stored
+  });
 }
