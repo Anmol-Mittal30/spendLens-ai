@@ -39,7 +39,7 @@ export async function generateAISummary(
         {
           role: "system",
           content:
-            "You write concise finance-literate SaaS spend audit summaries. Be specific, honest, and do not invent savings beyond the supplied audit. Keep it under 100 words. One paragraph only.",
+            "You write concise finance-literate SaaS spend audit summaries. Be specific, honest, and do not invent savings beyond the supplied audit. Keep it under 100 words. One paragraph only. Do not mention any specific vendor names like Credex.",
         },
         {
           role: "user",

@@ -7,6 +7,8 @@ import type { AuditInput, AuditResult, ToolInput, ToolKey, UseCase } from "@/lib
 import { AuditPDF } from "@/lib/pdf-report";
 import { pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
+import { saveAudit } from "@/lib/history";
+import Link from "next/link";
 
 const starterTool = (): ToolInput => ({
   id: typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : String(Date.now()),
@@ -36,12 +38,20 @@ export default function HomePage() {
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      const saved = window.localStorage.getItem("spendlens-input");
-      if (saved) {
+      const savedInput = window.localStorage.getItem("spendlens-input");
+      const savedAudit = window.localStorage.getItem("spendlens-audit");
+      if (savedInput) {
         try {
-          setInput(JSON.parse(saved) as AuditInput);
+          setInput(JSON.parse(savedInput) as AuditInput);
         } catch {
           window.localStorage.removeItem("spendlens-input");
+        }
+      }
+      if (savedAudit) {
+        try {
+          setAudit(JSON.parse(savedAudit) as ApiResult);
+        } catch {
+          window.localStorage.removeItem("spendlens-audit");
         }
       }
       setHydrated(true);
@@ -53,6 +63,15 @@ export default function HomePage() {
     if (!hydrated) return;
     window.localStorage.setItem("spendlens-input", JSON.stringify(input));
   }, [hydrated, input]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    if (audit) {
+      window.localStorage.setItem("spendlens-audit", JSON.stringify(audit));
+    } else {
+      window.localStorage.removeItem("spendlens-audit");
+    }
+  }, [hydrated, audit]);
 
   const shareUrl = useMemo(() => {
     if (!audit) return "";
@@ -94,6 +113,12 @@ export default function HomePage() {
     });
     const data = (await response.json()) as ApiResult;
     setAudit(data);
+    try {
+      await saveAudit(input, data.result, data.shareId);
+      window.dispatchEvent(new Event("spendlens-history-updated"));
+    } catch (error) {
+      console.error("Failed to save audit to history:", error);
+    }
     setLoading(false);
   }
 
@@ -143,7 +168,9 @@ export default function HomePage() {
           <span className="brand-mark">SL</span>
           <span>SpendLens AI</span>
         </div>
-        <span className="eyebrow">Credex-ready audit</span>
+        <Link href="/history" className="secondary" style={{ textDecoration: "none" }}>
+          History
+        </Link>
       </nav>
 
       <section className="hero">
@@ -164,7 +191,7 @@ export default function HomePage() {
             </div>
             <div className="metric">
               <strong>$500+</strong>
-              <span>Credex consult trigger</span>
+              <span>high savings flag</span>
             </div>
           </div>
         </div>
@@ -251,7 +278,7 @@ export default function HomePage() {
         <section className="results">
           <div className="result-hero">
             <div className="result-panel">
-              <span className="eyebrow">{audit.result.highSavings ? "Credex opportunity detected" : "Audit complete"}</span>
+              <span className="eyebrow">{audit.result.highSavings ? "High savings opportunity" : "Audit complete"}</span>
               <h2>{audit.result.monthlySavings < 100 ? "You're spending well." : "Your AI stack can be leaner."}</h2>
               <p>{audit.result.summary}</p>
               <div className="savings">
@@ -276,10 +303,10 @@ export default function HomePage() {
             </div>
 
             <div className="lead-box">
-              <h3>{audit.result.highSavings ? "Book the Credex savings review" : "Save this report"}</h3>
+              <h3>{audit.result.highSavings ? "Book a savings review" : "Save this report"}</h3>
               <p>
                 {audit.result.highSavings
-                  ? "High-savings audits get routed for a Credex credit consultation."
+                  ? "High-savings audits get routed for a savings consultation."
                   : "Get notified when new pricing changes create savings for this stack."}
               </p>
               <form className="lead-form" onSubmit={captureLead}>
@@ -325,7 +352,7 @@ export default function HomePage() {
         </section>
       )}
 
-      <footer>Built as a free lead-generation audit for Credex. Public share links exclude email and company details.</footer>
+      <footer>Built as a free AI spend audit tool. Public share links exclude email and company details.</footer>
     </main>
   );
 }

@@ -95,7 +95,7 @@ function evaluateTool(tool: ToolInput, teamSize: number, useCase: AuditInput["us
   }
 
   if (current >= 800) {
-    return line(tool, current * 0.8, "Source discounted credits through Credex", "Large retail AI spend is a strong candidate for discounted committed credits.");
+    return line(tool, current * 0.8, "Negotiate enterprise discount or commit to annual billing", "Vendors typically offer 15-25% off list price for committed volume at this spend level.");
   }
 
   return line(tool, current, "Keep current setup", "Spend appears aligned with the stated team size and primary use case.");
@@ -103,7 +103,7 @@ function evaluateTool(tool: ToolInput, teamSize: number, useCase: AuditInput["us
 
 export function buildTemplatedSummary(result: Omit<AuditResult, "summary">): string {
   if (result.monthlySavings >= 500) {
-    return `Your AI stack has a clear savings opportunity: about $${result.monthlySavings.toLocaleString()} per month, mostly from plan-fit and retail-credit gaps. The fastest path is to right-size small-team subscriptions, move routine API traffic to cheaper model tiers, and benchmark larger invoices against discounted credits. Credex should review this stack because the annualized opportunity is material enough to justify a short procurement conversation.`;
+    return `Your AI stack has a clear savings opportunity: about $${result.monthlySavings.toLocaleString()} per month, mostly from plan-fit and model-tier gaps. The fastest path is to right-size small-team subscriptions, move routine API traffic to cheaper model tiers, and negotiate enterprise discounts on high-spend tools. The annualized opportunity justifies a procurement review.`;
   }
   if (result.monthlySavings < 100) {
     return `Your current AI spend is fairly disciplined for a ${result.teamSize}-person team. There may still be future savings as pricing changes, but the audit did not find a strong reason to force a downgrade today. The best next step is to monitor seat creep, API usage mix, and upcoming vendor pricing changes before renewal.`;
