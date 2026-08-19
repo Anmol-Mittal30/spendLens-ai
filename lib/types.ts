@@ -34,6 +34,8 @@ export type AuditLine = {
   action: string;
   reason: string;
   severity: "good" | "optimize" | "high";
+  seats: number;
+  plan: string;
 };
 
 export type AuditResult = {

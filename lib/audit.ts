@@ -23,7 +23,9 @@ function line(tool: ToolInput, recommendedSpend: number, action: string, reason:
     savings,
     action,
     reason,
-    severity: savings >= 250 ? "high" : savings > 0 ? "optimize" : "good"
+    severity: savings >= 250 ? "high" : savings > 0 ? "optimize" : "good",
+    seats: tool.seats,
+    plan: tool.plan
   };
 }
 
