@@ -1,8 +1,8 @@
 # SpendLens AI
 
-SpendLens AI is a free AI spend audit platform designed for startup founders, CTOs, engineering managers, and indie developers who want to understand whether they are overspending on AI tools like ChatGPT, Claude, Cursor, Copilot, Gemini, and API usage.
+SpendLens AI is a free AI spend audit platform for startup founders, CTOs, engineering managers, and developers who want to understand if they're overspending on AI tools like Cursor, Copilot, ChatGPT, Claude, Gemini, Windsurf, and API usage.
 
-The platform analyzes a team's AI stack, evaluates plan fit, identifies overlapping subscriptions, estimates monthly + annual savings opportunities, and generates a shareable audit report with personalized recommendations and lead-capture flows for Credex.
+Analyze your AI stack, evaluate plan fit, identify overlapping subscriptions, estimate monthly + annual savings, and get a shareable audit report with personalized recommendations.
 
 ---
 
@@ -12,179 +12,154 @@ https://spend-lens-ai.vercel.app/
 
 ---
 
-## Screenshots
-
-### Landing Page
-![Landing Page](./screenshots/landing-page.png)
-
-### Audit Form
-![Audit Form](./screenshots/audit-form.png)
-
-### Audit Results — Savings Overview
-![Audit Results 1](./screenshots/auditresult-1.png)
-
-### Audit Results — Detailed Recommendations
-![Audit Results 2](./screenshots/auditresult-2.png)
-
-### Shareable Public Report
-![Shareable Report](./screenshots/shareable-report.png)
-
----
-
 ## Features
 
-- AI tool spend audit for startup teams
-- Deterministic recommendation engine
-- Plan-fit analysis and downgrade suggestions
-- Monthly + annual savings estimation
-- Personalized AI-generated audit summary
-- Public shareable audit URLs
-- Lead capture with Supabase storage
-- Transactional email support using Resend
-- Persistent form state across reloads
-- Lightweight abuse protection
-- Responsive mobile-friendly UI
+| Feature | Description |
+|---------|-------------|
+| **AI Tool Spend Audit** | Covers 8 tool families: Cursor, Copilot, Claude, ChatGPT, Anthropic API, OpenAI API, Gemini, Windsurf |
+| **Deterministic Engine** | Rule-based recommendations — predictable, defensible, no hallucinated pricing |
+| **Plan-Fit Analysis** | Detects over-provisioned plans (e.g., Business for <5 seats, Enterprise for small teams) |
+| **Savings Estimation** | Monthly + annual savings with high-savings flag (>$500/mo) |
+| **AI-Personalized Summary** | OpenRouter free tier (Llama 3.1 8B) for natural-language summaries; falls back to template |
+| **Shareable Public Reports** | Clean URLs with no email/company data — safe for viral sharing |
+| **Lead Capture + Email** | Resend API sends PDF report attachment + stores lead in Supabase |
+| **Local History (IndexedDB)** | Persistent audit history at `/history` — download, open, delete, clear all |
+| **Persistent Form State** | Form input survives refresh; audit results persist across navigation (Home ↔ History) |
+| **Responsive UI** | Mobile-friendly, light/dark aware, no heavy dependencies |
 
 ---
 
 ## Tech Stack
 
-- Next.js App Router
-- TypeScript
-- Tailwind CSS
-- Supabase
-- Resend
-- Vercel
-- Vitest
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript (strict)
+- **Styling**: Tailwind CSS (CSS variables, no Tailwind config)
+- **PDF Generation**: @react-pdf/renderer (client-side `toBlob`, server-side `renderToBuffer`)
+- **AI Provider**: OpenRouter (free tier: `meta-llama/llama-3.1-8b-instruct`)
+- **Email**: Resend (with PDF attachment as base64)
+- **Leads Storage**: Supabase (PostgreSQL)
+- **Deployment**: Vercel (preview per branch, production on main)
+- **Testing**: Vitest
+- **CI**: GitHub Actions (lint + test on push)
 
 ---
 
 ## Quick Start
 
-Clone the repository:
-
 ```bash
+# Clone
 git clone https://github.com/Anmol-Mittal30/spendLens-ai
 cd spendLens-ai
-```
 
-Install dependencies:
-
-```bash
+# Install
 npm install
-```
 
-Run development server:
+# Configure env (copy .env.example to .env.local and fill values)
+cp .env.example .env.local
 
-```bash
+# Run dev server
 npm run dev
-```
 
-Open:
-
-```bash
-http://localhost:3000
+# Open http://localhost:3000
 ```
 
 ---
 
 ## Environment Variables
 
-Create `.env.local` from `.env.example`:
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `NEXT_PUBLIC_APP_URL` | Yes | Base URL for share links and email |
+| `OPENROUTER_API_KEY` | No | Free at openrouter.ai — enables AI summaries |
+| `SUPABASE_URL` | No | For lead storage |
+| `SUPABASE_SERVICE_ROLE_KEY` | No | Service role key for server writes |
+| `RESEND_API_KEY` | No | For email with PDF attachment |
+| `RESEND_FROM_EMAIL` | No | Verified sender (e.g., `SpendLens AI <onboarding@resend.dev>`) |
+| `LEAD_TO_EMAIL` | No | Notification email for new leads |
 
-```env
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-
-SUPABASE_URL=
-SUPABASE_SERVICE_ROLE_KEY=
-
-RESEND_API_KEY=
-RESEND_FROM_EMAIL=SpendLens AI <onboarding@resend.dev>
-
-LEAD_TO_EMAIL=mittalanmol0309@gmail.com
-```
-
-Anthropic integration is optional and the app falls back to deterministic summaries if API credentials are unavailable.
+The app works fully offline (deterministic audit + PDF download) without any API keys.
 
 ---
 
 ## Deployment
 
-The project is deployed on Vercel.
-
-Production deployment steps:
+Deployed on Vercel:
 
 ```bash
+# Build locally to verify
 npm run build
+
+# Push to main — Vercel auto-deploys
+git push origin main
 ```
 
-Add environment variables in Vercel dashboard and redeploy after updating `NEXT_PUBLIC_APP_URL`.
+Add environment variables in Vercel Dashboard → Settings → Environment Variables (target: **Production**).
 
 ---
 
-## Decisions & Trade-offs
+## Architecture Decisions
 
-### 1. Deterministic audit logic instead of full AI recommendations
-The savings engine uses rule-based logic instead of LLM-generated financial advice because pricing recommendations need predictable and defensible outputs.
-
-### 2. AI used only for personalization
-LLM generation is limited to personalized summaries. The core savings calculations stay deterministic to avoid hallucinated pricing recommendations.
-
-### 3. Public share URLs without sensitive data
-Shareable reports intentionally exclude email addresses and company-identifying details to support viral sharing safely.
-
-### 4. Lightweight backend stack
-Supabase and Resend were chosen because they provide a fast production-ready backend setup suitable for a startup MVP without excessive infrastructure complexity.
-
-### 5. Graceful API fallback handling
-The app continues functioning even if AI generation fails or API credentials are missing, preventing broken audits during deployment or rate-limit failures.
-
-### 6. Minimal abuse protection
-A honeypot field and lightweight rate-limiting strategy were used instead of heavy CAPTCHA flows to reduce friction for legitimate users.
-
----
-
-## Test & CI
-
-Run tests:
-
-```bash
-npm test
-```
-
-Run linting:
-
-```bash
-npm run lint
-```
-
-Run production build:
-
-```bash
-npm run build
-```
-
-GitHub Actions automatically runs linting and tests on pushes to `main`.
+1. **Deterministic audit logic** — Pricing recommendations use rules, not LLM, for predictable outputs
+2. **AI only for personalization** — LLM generates the summary paragraph; calculations stay rule-based
+3. **Public URLs exclude PII** — Shareable reports contain no email/company data
+4. **Graceful fallbacks** — Missing API keys → template summary; failed API calls → template summary
+5. **Local-first history** — IndexedDB in browser, no server needed for audit history
+6. **Client-side PDF** — `pdf().toBlob()` for downloads, no server round-trip
 
 ---
 
 ## Project Structure
 
-```text
-app/                → Next.js App Router pages
-lib/                → Audit engine + helpers
-tests/              → Audit engine tests
-screenshots/        → README screenshots
-.github/workflows/  → CI workflow
 ```
+app/
+  page.tsx              → Main audit form + results
+  history/page.tsx      → Local audit history (IndexedDB)
+  audit/[id]/page.tsx   → Public shareable report
+  api/
+    audit/route.ts      → POST: run audit + AI summary
+    leads/route.ts      → POST: capture lead + email PDF
+lib/
+  audit.ts              → Rule engine + templated summaries
+  ai-provider.ts        → OpenRouter client + prompt building
+  summary.ts            → generateSummary() — AI first, template fallback
+  history.ts            → IndexedDB wrapper (save/get/delete/clear)
+  pdf-report.tsx        → @react-pdf/renderer component
+  lead.tsx              → Server PDF generation + Resend send
+  pricing.ts            → Plan prices + tool metadata
+  types.ts              → Shared TypeScript types
+  share.ts              → Base64 URL encoding for share IDs
+tests/
+  audit.test.ts         → Vitest unit tests for audit engine
+.github/workflows/
+  ci.yml                → Lint + test on push
+```
+
+---
+
+## Key Files for Interviews
+
+| File | Why It Matters |
+|------|----------------|
+| `lib/audit.ts` | Core business logic — rule engine, line evaluation, savings calc |
+| `lib/ai-provider.ts` | AI integration — lazy client, prompt engineering, fallback |
+| `lib/history.ts` | IndexedDB patterns — async wrapper, error handling |
+| `lib/pdf-report.tsx` | React-PDF — declarative PDF, client + server rendering |
+| `app/api/audit/route.ts` | API route — Zod validation, composition, response shaping |
+| `app/page.tsx` | Client state — hydration, localStorage/sessionStorage, form handling |
 
 ---
 
 ## Future Improvements
 
-- Benchmark-based spend comparison across startup sizes
-- PDF export for audit reports
-- Multi-user workspace support
-- Historical spend tracking
-- Smarter recommendation confidence scoring
+- Benchmark spend comparison across startup stages
+- Multi-user workspaces with shared history
+- Historical spend tracking over time
+- Confidence scoring on recommendations
 - Real-time pricing sync from vendor APIs
+- Export to Notion/Google Sheets/CSV
+
+---
+
+## License
+
+MIT — free to use, modify, and distribute.
