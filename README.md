@@ -148,19 +148,6 @@ tests/
 
 ---
 
-## Key Files for Interviews
-
-| File | Why It Matters |
-|------|----------------|
-| `lib/audit.ts` | Core business logic — rule engine, line evaluation, savings calc |
-| `lib/ai-provider.ts` | AI integration — lazy client, prompt engineering, fallback |
-| `lib/history.ts` | IndexedDB patterns — async wrapper, error handling |
-| `lib/pdf-report.tsx` | React-PDF — declarative PDF, client + server rendering |
-| `app/api/audit/route.ts` | API route — Zod validation, composition, response shaping |
-| `app/page.tsx` | Client state — hydration, localStorage/sessionStorage, form handling |
-
----
-
 ## Future Improvements
 
 - Benchmark spend comparison across startup stages
