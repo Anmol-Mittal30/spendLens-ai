@@ -25,9 +25,17 @@ export default function HistoryPage() {
   };
 
   useEffect(() => {
-    loadHistory();
+    let mounted = true;
+    async function init() {
+      await loadHistory();
+      if (!mounted) return;
+    }
+    init();
     window.addEventListener("spendlens-history-updated", loadHistory);
-    return () => window.removeEventListener("spendlens-history-updated", loadHistory);
+    return () => {
+      mounted = false;
+      window.removeEventListener("spendlens-history-updated", loadHistory);
+    };
   }, []);
 
   async function handleDownload(audit: StoredAudit) {
