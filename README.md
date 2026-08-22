@@ -29,9 +29,21 @@ https://spend-lens-ai.vercel.app/
 
 ---
 
+## Screenshots
+
+| Landing | Audit Form | Results |
+|---------|------------|---------|
+| ![Landing Page](./screenshots/landing-page.png) | ![Audit Form](./screenshots/audit-form.png) | ![Audit Result 1](./screenshots/auditresult-1.png) |
+
+| Results (cont.) | Shareable Report |
+|-----------------|------------------|
+| ![Audit Result 2](./screenshots/auditresult-2.png) | ![Shareable Report](./screenshots/shareable-report.png) |
+
+---
+
 ## Tech Stack
 
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript (strict)
 - **Styling**: Tailwind CSS (CSS variables, no Tailwind config)
 - **PDF Generation**: @react-pdf/renderer (client-side `toBlob`, server-side `renderToBuffer`)
